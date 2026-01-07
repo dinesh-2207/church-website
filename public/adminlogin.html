@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Full Gospel Ministries</title>
+    <style>
+        :root {
+            --theme-primary: #000604;
+            --theme-secondary: #f39c12;
+            --text-dark: #2c3e50;
+            --bg-light: #f9f9f9;
+            --bg-white: #ffffff;
+        }
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            height: 100%;
+        }
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .login-box {
+            background: var(--bg-white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-box .logo {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--theme-primary);
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+        .login-box .logo img {
+            height: 60px;
+            margin-right: 10px;
+        }
+        .login-box h2 {
+            font-size: 24px;
+            color: var(--theme-primary);
+            margin: 0 0 30px 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .btn-primary {
+            background-color: var(--theme-primary);
+            color: white;
+            padding: 14px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color: #004a35;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo">
+                <img src="logo.png" alt="Logo">
+                FULL GOSPEL MINISTRIES
+            </div>
+            <h2>Admin Panel Login</h2>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const loginButton = document.querySelector('.btn-primary');
+
+    loginButton.disabled = true;
+    loginButton.textContent = 'Logging in...';
+
+    try {
+        const response = await fetch(' http://localhost:5000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Invalid email or password');
+        }
+
+        // 🌟 --- THIS IS THE FIX --- 🌟
+        if (data.token) {
+            // Save the token to the browser's local storage
+            localStorage.setItem('token', data.token);
+            
+            // Now redirect to the admin page
+            window.location.href = 'admin.html';
+        } else {
+            // This should not happen if the server is correct, but it's good to check
+            throw new Error('Login successful, but no token was provided by the server.');
+        }
+        // -----------------------------
+
+    } catch (error) {
+        alert('❌ ' + error.message);
+        loginButton.disabled = false;
+        loginButton.textContent = 'Login';
+    }
+});
+</script>
+
+</body>
+</html>
