@@ -155,7 +155,7 @@
         .hero-left { flex: 1; min-width: 300px; } .hero-left img { width: 100%; max-width: 450px; height: auto; display: block; margin: 0 auto; } .hero-right { flex: 1.5; min-width: 300px; text-align: center; display: flex; flex-direction: column; align-items: center; } .hero-right .hero-logo { width: 200px; height: 200px; border-radius: 50%; background: rgb(6, 0, 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px; } .hero-right .hero-logo img { width: 200px; height: auto; } .hero-right h1 { font-size: 48px; font-weight: 800; margin: 0 0 15px 0; color: white; } .hero-right p { font-size: 20px; font-weight: 300; color: rgba(255, 255, 255, 0.9); margin-bottom: 30px; } .hero-buttons { display: flex; gap: 20px; } .hero-buttons .btn { padding: 14px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 16px; border: none; cursor: pointer; transition: all 0.3s; } .hero-buttons .btn-light { background: white; color: var(--hero-red-2); } .hero-buttons .btn-light:hover { background: #f0f0f0; transform: translateY(-2px); } .hero-buttons .btn-yellow { background: var(--theme-secondary); color: white; } .hero-buttons .btn-yellow:hover { background: #e67e22; transform: translateY(-2px); } .page-title { font-size: 42px; font-weight: 800; color: var(--theme-primary); text-align: center; margin-bottom: 40px; } 
         .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; } 
 
-        /* Location Grid (Fixed for Screenshot Style) */
+        /* Location Grid Specific Styling */
         #locations-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -180,14 +180,20 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         .loc-icon-circle {
-            width: 55px;
-            height: 55px;
+            width: 70px; /* Slightly larger to show image better */
+            height: 70px;
             background: #000;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 20px;
+            overflow: hidden; /* Ensure image is clipped to circle */
+        }
+        .loc-icon-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .loc-icon-circle svg {
             width: 28px;
@@ -845,16 +851,23 @@
             const grid = document.getElementById('locations-grid');
             if (!grid) return;
             try {
-                const res = await fetch('api/locations'); // Note: removed leading slash to avoid parse errors in some blob envs
+                const res = await fetch('api/locations'); 
                 const locations = await res.json();
-                grid.innerHTML = locations.map(loc => `
-                    <div class="location-btn-card" data-id="${loc.id}">
-                        <div class="loc-icon-circle">
-                            <svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg>
+                grid.innerHTML = locations.map(loc => {
+                    // Check if an image exists from DB, otherwise use fallback icon
+                    const imageHtml = loc.imageUrl 
+                        ? `<img src="/${loc.imageUrl}" alt="${loc.title}">` 
+                        : `<svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg>`;
+                    
+                    return `
+                        <div class="location-btn-card" data-id="${loc.id}">
+                            <div class="loc-icon-circle">
+                                ${imageHtml}
+                            </div>
+                            <h3>${loc.title}</h3>
                         </div>
-                        <h3>${loc.title}</h3>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             } catch (err) { console.error("Error loading locations:", err); }
         }
 
