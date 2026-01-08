@@ -854,7 +854,6 @@
                 const res = await fetch('api/locations'); 
                 const locations = await res.json();
                 grid.innerHTML = locations.map(loc => {
-                    // Check if an image exists from DB, otherwise use fallback icon
                     const imageHtml = loc.imageUrl 
                         ? `<img src="/${loc.imageUrl}" alt="${loc.title}">` 
                         : `<svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg>`;
@@ -877,7 +876,7 @@
                 const loc = await res.json();
                 document.getElementById('loc-detail-title').textContent = loc.title;
                 document.getElementById('loc-detail-breadcrumb').textContent = loc.title;
-                document.getElementById('loc-detail-image').src = loc.detailImageUrl ? loc.detailImageUrl : (loc.imageUrl || 'https://placehold.co/600x400');
+                document.getElementById('loc-detail-image').src = loc.detailImageUrl ? `/${loc.detailImageUrl}` : (loc.imageUrl ? `/${loc.imageUrl}` : 'https://placehold.co/600x400');
                 document.getElementById('loc-detail-pastorName').textContent = loc.pastorName || '';
                 document.getElementById('loc-detail-phone').querySelector('span').textContent = loc.phone || 'N/A';
                 document.getElementById('loc-detail-email').querySelector('span').textContent = loc.email || 'N/A';
@@ -897,7 +896,7 @@
                 const events = await res.json();
                 grid.innerHTML = events.map(evt => `
                     <div class="info-card" data-id="${evt.id}">
-                        <img src="${evt.imageUrl || 'https://placehold.co/400x200'}" alt="${evt.title}">
+                        <img src="${evt.imageUrl ? `/${evt.imageUrl}` : 'https://placehold.co/400x200'}" alt="${evt.title}">
                         <div class="info-card-content">
                             <h3>${evt.title}</h3>
                             <div class="info-card-subtitle">${evt.subtitle}</div>
@@ -914,7 +913,7 @@
                 const evt = await res.json();
                 document.getElementById('evt-detail-title').textContent = evt.title;
                 document.getElementById('evt-detail-breadcrumb').textContent = evt.title;
-                document.getElementById('evt-detail-image').src = evt.detailImageUrl || evt.imageUrl;
+                document.getElementById('evt-detail-image').src = evt.detailImageUrl ? `/${evt.detailImageUrl}` : (evt.imageUrl ? `/${evt.imageUrl}` : '');
                 document.getElementById('evt-detail-subtitle').textContent = evt.subtitle;
                 document.getElementById('evt-detail-fullDescription').innerHTML = (evt.fullDescription || evt.description).replace(/\n/g, '<br>');
                 setMode('single-page', 'event-detail');
@@ -929,7 +928,7 @@
                 const list = await res.json();
                 grid.innerHTML = list.map(m => `
                     <div class="info-card" data-id="${m.id}">
-                        <img src="${m.imageUrl || 'https://placehold.co/400x200'}" alt="${m.title}">
+                        <img src="${m.imageUrl ? `/${m.imageUrl}` : 'https://placehold.co/400x200'}" alt="${m.title}">
                         <div class="info-card-content">
                             <h3>${m.title}</h3>
                             <div class="info-card-subtitle">${m.subtitle}</div>
@@ -946,11 +945,22 @@
                 const min = await res.json();
                 document.getElementById('min-detail-title').textContent = min.title;
                 document.getElementById('min-detail-breadcrumb').textContent = min.title;
-                document.getElementById('min-detail-image').src = min.detailImageUrl || min.imageUrl;
+                document.getElementById('min-detail-image').src = min.detailImageUrl ? `/${min.detailImageUrl}` : (min.imageUrl ? `/${min.imageUrl}` : '');
                 document.getElementById('min-detail-subtitle').textContent = min.subtitle;
                 document.getElementById('min-detail-fullDescription').innerHTML = (min.fullDescription || min.description).replace(/\n/g, '<br>');
                 setMode('single-page', 'ministry-detail');
             } catch (err) { console.error(err); }
+        }
+
+        // --- GALLERY HELPERS ---
+        function applyGalleryFilter(filter) {
+            const photoGallery = document.getElementById('gallery-grid');
+            if (!photoGallery) return;
+            const photoItems = photoGallery.querySelectorAll('.photo-item');
+            photoItems.forEach(item => {
+                const category = item.getAttribute('data-category');
+                item.classList.toggle('hide', filter !== 'all' && filter !== category);
+            });
         }
 
         async function loadGalleryWebsite() {
@@ -960,8 +970,14 @@
                 const res = await fetch('api/gallery');
                 const photos = await res.json();
                 gallery.innerHTML = photos.map(p => `
-                    <div class="photo-item" data-category="${p.category}"><img src="${p.imageUrl}" alt="Gallery"></div>
+                    <div class="photo-item" data-category="${p.category}">
+                        <img src="/${p.imageUrl}" alt="Gallery">
+                    </div>
                 `).join('');
+                
+                // Re-apply current active filter after loading images
+                const activeBtn = document.querySelector('.gallery-filter-btn.active');
+                if (activeBtn) applyGalleryFilter(activeBtn.getAttribute('data-filter'));
             } catch (err) { console.error(err); }
         }
 
@@ -971,7 +987,7 @@
                 const data = await res.json();
                 document.getElementById('about-mission-text').innerHTML = data.ourMission || '';
                 document.getElementById('about-story-text').innerHTML = data.ourStory || '';
-                if (data.imageUrl) document.getElementById('about-image').src = data.imageUrl;
+                if (data.imageUrl) document.getElementById('about-image').src = `/${data.imageUrl}`;
             } catch (err) { console.error(err); }
         }
 
@@ -1028,6 +1044,17 @@
                         if (pageId === 'home') setMode('scroll-snap');
                         else setMode('single-page', pageId);
                     }
+                });
+            });
+
+            // Gallery Filter Logic
+            const filterButtons = document.querySelectorAll('.gallery-filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const filter = button.getAttribute('data-filter');
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    applyGalleryFilter(filter);
                 });
             });
 
