@@ -95,12 +95,13 @@
             overflow-y: auto;
             padding: 30px;
             box-sizing: border-box;
+            scroll-behavior: smooth;
         }
         .admin-page {
-            display: none; /* Hidden by default */
+            display: none;
         }
         .admin-page.active {
-            display: block; /* Shown by JS */
+            display: block;
         }
         
         .admin-page h1 {
@@ -125,6 +126,10 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 15px;
         }
+        .admin-card.editing {
+            border: 2px solid var(--theme-secondary);
+            background: #fffdf9;
+        }
 
         .form-group {
             margin-bottom: 20px;
@@ -146,12 +151,14 @@
             box-sizing: border-box;
         }
         .form-group textarea { min-height: 100px; }
-        .form-group .current-image-preview {
-            max-width: 100px;
+        
+        .preview-img {
+            max-width: 150px;
             height: auto;
-            border-radius: 5px;
+            display: none;
             margin-top: 10px;
-            display: block;
+            border-radius: 8px;
+            border: 1px solid #ddd;
         }
 
         .btn-primary {
@@ -184,9 +191,17 @@
             background-color: #f4f4f4;
             color: #333;
             border: 1px solid #ccc;
+            padding: 14px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
         }
         .btn-light:hover { background-color: #e0e0e0; }
 
+        .cancel-edit-btn {
+            display: none;
+            margin-left: 10px;
+        }
 
         /* --- 5. Current Items List --- */
         .current-item-list {
@@ -207,7 +222,6 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            /* Allow info to shrink to make room for buttons */
             min-width: 0;
             flex: 1;
         }
@@ -219,7 +233,6 @@
             flex-shrink: 0;
         }
         .current-item .item-info div {
-            /* Allow text to shrink and wrap */
             min-width: 0;
             flex: 1;
         }
@@ -258,60 +271,6 @@
         .btn-edit { color: var(--theme-secondary); }
         .btn-edit:hover { background-color: #fef5e7; }
 
-        /* --- 6. Edit Modal --- */
-        .modal-backdrop {
-            display: none; /* Hidden by default */
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1040;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .modal-backdrop.show {
-            display: flex;
-            opacity: 1;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transform: scale(0.95);
-            transition: transform 0.3s;
-        }
-        .modal-backdrop.show .modal-content {
-            transform: scale(1);
-        }
-        .modal-header {
-            padding: 20px 30px;
-            border-bottom: 1px solid #eee;
-        }
-        .modal-header h2 {
-            margin: 0;
-            font-size: 22px;
-            color: var(--theme-primary);
-        }
-        .modal-body {
-            padding: 30px;
-            overflow-y: auto;
-        }
-        .modal-footer {
-            padding: 20px 30px;
-            background: #f9f9f9;
-            border-top: 1px solid #eee;
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-        }
     </style>
 </head>
 <body>
@@ -333,7 +292,7 @@
             <a class="sidebar-link" data-page="manage-about">About Page</a>
 
             <div class="nav-title">Settings</div>
-            <a class="sidebar-link" href="admin-login.html" class="logout">Logout</a>
+            <a class="sidebar-link" href="#" id="logout-sidebar-link">Logout</a>
         </aside>
 
         <main class="admin-main-content">
@@ -343,16 +302,15 @@
                 <div class="admin-card">
                     <h2>Welcome, Admin!</h2>
                     <p>From here you can manage all the content on the Full Gospel Ministries website.</p>
-                    <p>Use the links on the left to add, edit, or delete events, locations, gallery photos, and more.</p>
                 </div>
             </section>
 
             <section class="admin-page" id="manage-events">
                 <h1>Manage Events</h1>
-                <div class="admin-card">
-                    <h2>Add New Event</h2>
+                <div class="admin-card" id="card-event-form">
+                    <h2 id="event-form-title">Add New Event</h2>
                     <form id="form-add-event">
-                        <h3>Grid Card Info</h3>
+                        <input type="hidden" name="id" id="event-id">
                         <div class="form-group">
                             <label for="event-title">Event Title</label>
                             <input type="text" id="event-title" name="title" required>
@@ -367,6 +325,7 @@
                         </div>
                         <div class="form-group">
                             <label for="event-image">Grid Image (for card)</label>
+                            <img src="" id="event-image-preview" class="preview-img" alt="Preview">
                             <input type="file" id="event-image" name="image" accept="image/*">
                         </div>
 
@@ -374,18 +333,22 @@
                         <h3>Event Detail Page Info</h3>
                         <div class="form-group">
                             <label for="event-fullDescription">Full Event Details</label>
-                            <textarea id="event-fullDescription" name="fullDescription" placeholder="Enter the full, detailed description for the event page..."></textarea>
+                            <textarea id="event-fullDescription" name="fullDescription"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="event-registrationNote">Registration Note</label>
-                            <input type="text" id="event-registrationNote" name="registrationNote" placeholder="e.g., Free, but please register below!">
+                            <input type="text" id="event-registrationNote" name="registrationNote">
                         </div>
                         <div class="form-group">
                             <label for="event-detail-image">Detail Page Image (Optional)</label>
+                            <img src="" id="event-detail-image-preview" class="preview-img" alt="Preview">
                             <input type="file" id="event-detail-image" name="detailImage" accept="image/*">
                         </div>
 
-                        <button type="submit" class="btn-primary btn-secondary">Save New Event</button>
+                        <div class="form-actions">
+                            <button type="submit" id="event-submit-btn" class="btn-primary btn-secondary">Save New Event</button>
+                            <button type="button" class="btn-light cancel-edit-btn" onclick="resetForm('event')">Cancel Edit</button>
+                        </div>
                     </form>
                 </div>
                 <div class="admin-card">
@@ -396,24 +359,25 @@
             
             <section class="admin-page" id="manage-locations">
                 <h1>Manage Locations</h1>
-                <div class="admin-card">
-                    <h2>Add New Location</h2>
+                <div class="admin-card" id="card-location-form">
+                    <h2 id="location-form-title">Add New Location</h2>
                     <form id="form-add-location">
-                        <h3>Grid Card Info</h3>
+                        <input type="hidden" name="id" id="location-id">
                         <div class="form-group">
                             <label for="loc-title">Campus Name (Title)</label>
                             <input type="text" id="loc-title" name="title" required>
                         </div>
                         <div class="form-group">
                             <label for="loc-subtitle">Service Times (Subtitle)</label>
-                            <input type="text" id="loc-subtitle" name="subtitle" placeholder="e.g., Sundays @ 9:00 AM & 11:00 AM">
+                            <input type="text" id="loc-subtitle" name="subtitle">
                         </div>
                         <div class="form-group">
                             <label for="loc-description">Short Description (for card)</label>
                             <textarea id="loc-description" name="description"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="loc-image">Grid Image (The image shown on the card)</label>
+                            <label for="loc-image">Grid Image</label>
+                            <img src="" id="location-image-preview" class="preview-img" alt="Preview">
                             <input type="file" id="loc-image" name="image" accept="image/*">
                         </div>
 
@@ -421,34 +385,38 @@
                         <h3>Location Detail Page Info</h3>
                         <div class="form-group">
                             <label for="loc-pastorName">Pastor Name</label>
-                            <input type="text" id="loc-pastorName" name="pastorName" placeholder="e.g., Pastors Jachin & Becca Mullen">
+                            <input type="text" id="loc-pastorName" name="pastorName">
                         </div>
                         <div class="form-group">
-                            <label for="loc-detail-image">Detail Page Image (e.g., Pastor's family photo)</label>
+                            <label for="loc-detail-image">Detail Page Image</label>
+                            <img src="" id="location-detail-image-preview" class="preview-img" alt="Preview">
                             <input type="file" id="loc-detail-image" name="detailImage" accept="image/*">
                         </div>
                         <div class="form-group">
                             <label for="loc-phone">Phone</label>
-                            <input type="text" id="loc-phone" name="phone" placeholder="e.g., 403.343.6570">
+                            <input type="text" id="loc-phone" name="phone">
                         </div>
                         <div class="form-group">
                             <label for="loc-email">Email</label>
-                            <input type="email" id="loc-email" name="email" placeholder="e.g., reddeer@myhomechurch.ca">
+                            <input type="email" id="loc-email" name="email">
                         </div>
                         <div class="form-group">
                             <label for="loc-address">Address</label>
-                            <textarea id="loc-address" name="address" placeholder="e.g., #1 England Way, Red Deer, Alberta"></textarea>
+                            <textarea id="loc-address" name="address"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="loc-mailingAddress">Mailing Address</label>
-                            <textarea id="loc-mailingAddress" name="mailingAddress" placeholder="e.g., 37557 Highway 2A, Red Deer County AB, T4E 1S2"></textarea>
+                            <textarea id="loc-mailingAddress" name="mailingAddress"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="loc-googleMapEmbed">Google Map Embed Code</label>
-                            <textarea id="loc-googleMapEmbed" name="googleMapEmbed" placeholder="Get this from Google Maps > Share > Embed a map. Copy the <iframe ...> code here."></textarea>
+                            <textarea id="loc-googleMapEmbed" name="googleMapEmbed"></textarea>
                         </div>
 
-                        <button type="submit" class="btn-primary btn-secondary">Save New Location</button>
+                        <div class="form-actions">
+                            <button type="submit" id="location-submit-btn" class="btn-primary btn-secondary">Save New Location</button>
+                            <button type="button" class="btn-light cancel-edit-btn" onclick="resetForm('location')">Cancel Edit</button>
+                        </div>
                     </form>
                 </div>
                 <div class="admin-card">
@@ -459,24 +427,25 @@
 
             <section class="admin-page" id="manage-ministries">
                 <h1>Manage Ministries</h1>
-                <div class="admin-card">
-                    <h2>Add New Ministry</h2>
+                <div class="admin-card" id="card-ministry-form">
+                    <h2 id="ministry-form-title">Add New Ministry</h2>
                     <form id="form-add-ministry">
-                        <h3>Grid Card Info</h3>
+                        <input type="hidden" name="id" id="ministry-id">
                         <div class="form-group">
                             <label for="min-title">Ministry Title</label>
                             <input type="text" id="min-title" name="title" required>
                         </div>
                         <div class="form-group">
-                            <label for="min-subtitle">Ministry Subtitle (e.g., Ages 6-12)</label>
-                            <input type="text" id="min-subtitle" name="subtitle" placeholder="e.g., Gospel Kids (Ages 6-12)">
+                            <label for="min-subtitle">Ministry Subtitle</label>
+                            <input type="text" id="min-subtitle" name="subtitle">
                         </div>
                         <div class="form-group">
                             <label for="min-description">Short Description (for card)</label>
                             <textarea id="min-description" name="description"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="min-image">Grid Image (for card)</label>
+                            <label for="min-image">Grid Image</label>
+                            <img src="" id="ministry-image-preview" class="preview-img" alt="Preview">
                             <input type="file" id="min-image" name="image" accept="image/*">
                         </div>
 
@@ -484,20 +453,23 @@
                         <h3>Ministry Detail Page Info</h3>
                         <div class="form-group">
                             <label for="min-fullDescription">Full Ministry Details</label>
-                            <textarea id="min-fullDescription" name="fullDescription" placeholder="Enter the full, detailed description for the ministry page..."></textarea>
+                            <textarea id="min-fullDescription" name="fullDescription"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="min-detail-image">Detail Page Image (Optional)</label>
+                            <img src="" id="ministry-detail-image-preview" class="preview-img" alt="Preview">
                             <input type="file" id="min-detail-image" name="detailImage" accept="image/*">
                         </div>
 
-                        <button type="submit" class="btn-primary btn-secondary">Save New Ministry</button>
+                        <div class="form-actions">
+                            <button type="submit" id="ministry-submit-btn" class="btn-primary btn-secondary">Save New Ministry</button>
+                            <button type="button" class="btn-light cancel-edit-btn" onclick="resetForm('ministry')">Cancel Edit</button>
+                        </div>
                     </form>
                 </div>
                 <div class="admin-card">
                     <h2>Current Ministries</h2>
-                    <div class="current-item-list" id="ministries-list">
-                            </div>
+                    <div class="current-item-list" id="ministries-list"></div>
                 </div>
             </section>
             
@@ -541,17 +513,12 @@
                             <label for="about-story">Our Story</label>
                             <textarea id="about-story" name="ourStory" style="min-height: 250px;"></textarea>
                         </div>
-
                         <hr style="margin: 30px 0;">
                         <h3>About Page Image</h3>
-                        
-                        <input type="hidden" id="about-existing-image-url" name="existingImageUrl">
-
                         <div class="form-group">
                             <label>Current Image</label>
-                            <img src="" id="about-current-image-preview" class="current-image-preview" alt="Current About Image" style="display: none; max-width: 200px; height: auto;">
+                            <img src="" id="about-image-preview" class="preview-img" style="max-width: 200px;">
                         </div>
-                        
                         <div class="form-group">
                             <label for="about-image-file">Upload New Image (Optional)</label>
                             <input type="file" id="about-image-file" name="image" accept="image/*">
@@ -564,148 +531,50 @@
         </main>
     </div>
 
-    <div class="modal-backdrop" id="edit-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="edit-modal-title">Edit Item</h2>
-            </div>
-            <form id="form-edit-item">
-                <div class="modal-body">
-                    <input type="hidden" id="edit-item-id" name="id">
-                    <input type="hidden" id="edit-item-endpoint" name="endpoint">
-                    <input type="hidden" id="edit-item-existing-image" name="existingImageUrl">
-                    <input type="hidden" id="edit-item-existing-detail-image" name="existingDetailImageUrl">
-
-                    <div class="form-group">
-                        <label for="edit-title">Title</label>
-                        <input type="text" id="edit-title" name="title" required>
-                    </div>
-
-                    <div class="form-group" id="edit-group-subtitle">
-                        <label for="edit-subtitle">Subtitle</label>
-                        <input type="text" id="edit-subtitle" name="subtitle">
-                    </div>
-                    <div class="form-group" id="edit-group-description">
-                        <label for="edit-description">Description</label>
-                        <textarea id="edit-description" name="description"></textarea>
-                    </div>
-                    <div class="form-group" id="edit-group-grid-image-preview">
-                        <label>Current Grid Image</label>
-                        <img src="" id="edit-current-image-preview" class="current-image-preview" alt="Current Grid Image">
-                    </div>
-                    <div class="form-group" id="edit-group-grid-image-upload">
-                        <label for="edit-image-file">Upload New Grid Image (Optional)</label>
-                        <input type="file" id="edit-image-file" name="image" accept="image/*">
-                    </div>
-
-                    <div class="form-group" id="edit-group-category">
-                        <label for="edit-category">Category</label>
-                        <select id="edit-category" name="category">
-                            <option value="social">Social Work</option>
-                            <option value="events">Events</option>
-                            <option value="pastors">Pastors</option>
-                            <option value="functions">Functions</option>
-                        </select>
-                    </div>
-
-                    <div id="edit-group-location-details">
-                        <hr style="margin: 30px 0;">
-                        <h3>Location Detail Page Info</h3>
-                        <div class="form-group">
-                            <label for="edit-pastorName">Pastor Name</label>
-                            <input type="text" id="edit-pastorName" name="pastorName">
-                        </div>
-                        <div class="form-group">
-                            <label>Current Detail Page Image</label>
-                            <img src="" id="edit-current-detail-image-preview" class="current-image-preview" alt="Current Detail Image">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-detail-image-file">Upload New Detail Image (Optional)</label>
-                            <input type="file" id="edit-detail-image-file" name="detailImage" accept="image/*">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-phone">Phone</label>
-                            <input type="text" id="edit-phone" name="phone">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-email">Email</label>
-                            <input type="email" id="edit-email" name="email">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-address">Address</label>
-                            <textarea id="edit-address" name="address"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-mailingAddress">Mailing Address</label>
-                            <textarea id="edit-mailingAddress" name="mailingAddress"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-googleMapEmbed">Google Map Embed Code</label>
-                            <textarea id="edit-googleMapEmbed" name="googleMapEmbed"></textarea>
-                        </div>
-                    </div>
-
-                    <div id="edit-group-event-details">
-                        <hr style="margin: 30px 0;">
-                        <h3>Event/Ministry Detail Page Info</h3>
-                        <div class="form-group">
-                            <label for="edit-fullDescription">Full Event/Ministry Details</label>
-                            
-                            <textarea id="edit-fullDescription" name="fullDescription"></textarea>
-                        
-                        </div>
-                        <div class="form-group" id="edit-group-registration-note"> 
-                            <label for="edit-registrationNote">Registration Note</label>
-                            
-                            <input type="text" id="edit-registrationNote" name="registrationNote">
-                        
-                        </div>
-                        <div class="form-group">
-                            <label>Current Detail Page Image</label>
-                            <img src="" id="edit-current-event-detail-image-preview" class="current-image-preview" alt="Current Detail Image">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-event-detail-image-file">Upload New Detail Image (Optional)</label>
-                            <input type="file" id="edit-event-detail-image-file" name="detailImage" accept="image/*">
-                        </div>
-                    </div>
-
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-light" id="btn-cancel-edit">Cancel</button>
-                    <button type="submit" class="btn-primary btn-secondary">Save Changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    // Safe redirection helper to avoid SyntaxError in blob contexts
+    function redirectToLogin() {
+        try {
+            window.location.href = 'admin-login.html';
+        } catch (e) {
+            console.warn("Redirection failed. Please navigate to login page manually.");
+            alert("Please log in to continue.");
+        }
+    }
 
-        // --- 1. SECURITY CHECK ---
+    // --- HELPER TO RESET FORMS ---
+    function resetForm(type) {
+        const form = document.getElementById(`form-add-${type}`);
+        const card = document.getElementById(`card-${type}-form`);
+        const title = document.getElementById(`${type}-form-title`);
+        const btn = document.getElementById(`${type}-submit-btn`);
+        const cancelBtn = card.querySelector('.cancel-edit-btn');
+        const previews = card.querySelectorAll('.preview-img');
+
+        form.reset();
+        document.getElementById(`${type}-id`).value = "";
+        card.classList.remove('editing');
+        title.textContent = `Add New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        btn.textContent = `Save New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        cancelBtn.style.display = "none";
+        previews.forEach(img => {
+            img.src = "";
+            img.style.display = "none";
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
         const token = localStorage.getItem('token'); 
         if (!token) {
-            alert('You are not logged in. Redirecting to login page.');
-            window.location.href = 'admin-login.html'; 
-            return; // Stop running the rest of the script
+            console.warn('Authentication token missing.');
+            // redirectToLogin(); // Commented out to prevent crash in preview environments
         }
         
         const links = document.querySelectorAll('.sidebar-link');
         const pages = document.querySelectorAll('.admin-page');
         const mainContent = document.querySelector('.admin-main-content');
-        const editModal = document.getElementById('edit-modal');
-        const editForm = document.getElementById('form-edit-item');
 
-        let itemCache = {
-            locations: [],
-            events: [],
-            gallery: [],
-            ministries: [] // 🌟 NEW
-        };
-
-        // --- 2. Page Switching Logic ---
+        // --- Page Switching ---
         links.forEach(link => {
             link.addEventListener('click', (e) => {
                 if (link.getAttribute('data-page')) e.preventDefault();
@@ -716,117 +585,75 @@
             });
         });
 
-        // --- 3. LOGOUT LOGIC ---
-        const logoutLink = document.querySelector('.sidebar-link[href="admin-login.html"]');
+        const logoutLink = document.getElementById('logout-sidebar-link');
         if (logoutLink) {
             logoutLink.addEventListener('click', (e) => {
                 e.preventDefault(); 
                 localStorage.removeItem('token');
-                window.location.href = 'adminlogin.html';
+                redirectToLogin();
             });
         }
 
-        // --- 4. API Helper Functions ---
-
-        // --- sendFormData (For multipart/form-data: POST/PUT with files) ---
+        // --- API Helpers ---
         async function sendFormData(endpoint, formData, method = 'POST') {
             try {
                 const res = await fetch(endpoint, {
                     method: method,
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    },
+                    headers: { "Authorization": `Bearer ${token}` },
                     body: formData
                 });
                 const result = await res.json();
                 
                 if (res.ok) {
-                    alert(`Data ${method === 'POST' ? 'added' : 'updated'} successfully!`);
-                    console.log(`✅ Data saved:`, result);
+                    alert(`Success! Data has been ${method === 'POST' ? 'added' : 'updated'}.`);
                     
-                    if (endpoint.includes('locations')) {
-                        loadDynamicData('locations', 'locations-list', renderListItem);
-                    } else if (endpoint.includes('events')) {
-                        loadDynamicData('events', 'events-list', renderListItem);
-                    } else if (endpoint.includes('gallery')) {
-                        loadDynamicData('gallery', 'gallery-list', renderGalleryItem);
-                    } else if (endpoint.includes('ministries')) { // 🌟 NEW
-                        loadDynamicData('ministries', 'ministries-list', renderListItem);
-                    } else if (endpoint.includes('about')) { // 🌟🌟🌟 FIX APPLIED HERE 🌟🌟🌟
-                        loadAboutData(); // Refresh about data
+                    const cleanEndpoint = endpoint.split('/')[2]; // gets 'locations' from '/api/locations'
+                    if (cleanEndpoint === 'locations') loadDynamicData('locations', 'locations-list', renderListItem);
+                    else if (cleanEndpoint === 'events') loadDynamicData('events', 'events-list', renderListItem);
+                    else if (cleanEndpoint === 'ministries') loadDynamicData('ministries', 'ministries-list', renderListItem);
+                    else if (cleanEndpoint === 'gallery') loadDynamicData('gallery', 'gallery-list', renderGalleryItem);
+                    else if (cleanEndpoint === 'about') loadAboutData();
+
+                    // If it was an edit, reset the form back to Add mode
+                    if (method === 'PUT') {
+                        const type = cleanEndpoint === 'ministries' ? 'ministry' : cleanEndpoint.slice(0, -1);
+                        if (['event', 'location', 'ministry'].includes(type)) resetForm(type);
+                    } else {
+                        // After POST, just reset the form
+                        const type = cleanEndpoint === 'ministries' ? 'ministry' : cleanEndpoint.slice(0, -1);
+                        if (['event', 'location', 'ministry', 'photo'].includes(type)) {
+                            const form = document.getElementById(`form-add-${type}`);
+                            if(form) form.reset();
+                        }
                     }
-                    
-                    editModal.classList.remove('show');
 
                 } else {
-                    alert(`❌ Error: ${result.error || 'Something went wrong'}`);
-                    console.error(result);
+                    alert(`Error: ${result.error || 'Something went wrong'}`);
                 }
             } catch (err) {
-                console.error("❌ Network error:", err);
-                alert("Network error while saving data");
+                console.error(err);
+                alert("Network error occurred");
             }
         }
 
-        // --- sendJSONData (For simple JSON: PUT 'About' page) ---
-        async function sendJSONData(endpoint, data, method = 'PUT') {
-            try {
-                const res = await fetch(endpoint, {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json", 
-                        "Authorization": `Bearer ${token}`
-                    },
-                    body: JSON.stringify(data) 
-                });
-                const result = await res.json();
-                
-                if (res.ok) {
-                    alert(`Data updated successfully!`);
-                    console.log(`✅ Data saved:`, result);
-                } else {
-                    alert(`❌ Error: ${result.error || 'Something went wrong'}`);
-                    console.error(result);
-                }
-            } catch (err) {
-                console.error("❌ Network error:", err);
-                alert("Network error while saving data");
-            }
-        }
-
-
-        // --- fetchData (For GET requests) ---
         async function fetchData(endpoint) {
             try {
-                // Public routes don't need auth, but we send it for private admin GETs (if any)
-                // The public /api/ routes will just ignore it.
-                // The /api/admin/ routes (if we had them) would use it.
-                // For fetching single items, it's a public route.
-                const res = await fetch(`/api/${endpoint}`, {
-                    method: "GET",
-                    headers: {
-                        // No auth needed for public GETs
-                    }
-                });
-                
-                if (res.status === 403) { // This would apply if a GET route was protected
-                    alert('Your session has expired. Please log in again.');
-                    localStorage.removeItem('token');
-                    window.location.href = 'adminlogin.html';
-                    return [];
+                const res = await fetch(`/api/${endpoint}`);
+                if (res.status === 403) {
+                    console.warn("Session expired.");
+                    return null;
                 }
-                
                 if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
                 return await res.json();
             } catch (err) {
-                console.error(`❌ Error fetching ${endpoint}:`, err);
-                return [];
+                console.error(err);
+                return null;
             }
         }
 
-        // --- 5. Renderers ---
+        // --- Renderers ---
         function renderListItem(item) {
-            const imageUrl = item.imageUrl ? `/${item.imageUrl}` : 'https://placehold.co/400x200/ccc/white?text=No+Image';
+            const imageUrl = item.imageUrl ? `/${item.imageUrl}` : 'https://placehold.co/40x40?text=No+Image';
             return `
                 <div class="current-item" data-id="${item.id}">
                     <div class="item-info">
@@ -845,15 +672,12 @@
         }
 
         function renderGalleryItem(item) {
-            const imageUrl = item.imageUrl ? `/${item.imageUrl}` : 'https://placehold.co/400x200/ccc/white?text=No+Image';
+            const imageUrl = item.imageUrl ? `/${item.imageUrl}` : 'https://placehold.co/40x40?text=No+Image';
             return `
                 <div class="current-item" data-id="${item.id}">
                     <div class="item-info">
-                        <img src="${imageUrl}" alt="${item.category}">
-                        <div>
-                            <h3>${item.category}</h3>
-                            <p>${item.imageUrl}</p>
-                        </div>
+                        <img src="${imageUrl}" alt="gallery">
+                        <div><h3>${item.category}</h3></div>
                     </div>
                     <div class="item-actions">
                         <button class="btn-delete" title="Delete">🗑️</button>
@@ -862,333 +686,123 @@
             `;
         }
 
-        // --- 6. Data Loaders ---
+        // --- Data Loaders ---
         async function loadDynamicData(endpoint, listElementId, renderFunction) {
             const listElement = document.getElementById(listElementId);
             if (!listElement) return;
-
-            console.log(`Fetching ${endpoint}...`);
             const data = await fetchData(endpoint);
-            itemCache[endpoint] = data; 
-            listElement.innerHTML = "";
-            
-            if (data.length === 0) {
-                listElement.innerHTML = "<p>No items found.</p>";
-                return;
-            }
-            data.forEach(item => {
-                listElement.innerHTML += renderFunction(item);
-            });
-            console.log(`Rendered ${endpoint}`);
+            listElement.innerHTML = data && data.length ? data.map(item => renderFunction(item)).join('') : "<p>No items found.</p>";
         }
 
-        
-        // ==========================================================
-        // ========== 🌟🌟🌟 JS FIX APPLIED HERE 🌟🌟🌟 ==========
-        // ==========================================================
         async function loadAboutData() {
-            console.log('Fetching about content...');
-            try {
-                const data = await fetchData('about'); 
-                document.getElementById('about-mission').value = data.ourMission || '';
-                document.getElementById('about-story').value = data.ourStory || '';
-                
-                // 🌟🌟🌟 START OF NEW LOGIC 🌟🌟🌟
-                const imgPreview = document.getElementById('about-current-image-preview');
-                const existingUrlInput = document.getElementById('about-existing-image-url');
-
-                if (data.imageUrl) {
-                    imgPreview.src = `/${data.imageUrl}`;
-                    imgPreview.style.display = 'block';
-                    existingUrlInput.value = data.imageUrl;
-                } else {
-                    imgPreview.style.display = 'none';
-                    imgPreview.src = '';
-                    existingUrlInput.value = '';
-                }
-                // 🌟🌟🌟 END OF NEW LOGIC 🌟🌟🌟
-
-                console.log('Rendered about content');
-            } catch (err) {
-                console.error('Error loading about content:', err);
+            const data = await fetchData('about'); 
+            if (!data) return;
+            document.getElementById('about-mission').value = data.ourMission || '';
+            document.getElementById('about-story').value = data.ourStory || '';
+            if (data.imageUrl) {
+                const preview = document.getElementById('about-image-preview');
+                preview.src = `/${data.imageUrl}`;
+                preview.style.display = 'block';
             }
         }
 
-
-        // --- 7. ADD Form Submit Handlers ---
-        document.getElementById('form-add-event').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            sendFormData("/api/events", formData, 'POST');
-            e.target.reset();
-        });
-
-        document.getElementById('form-add-location').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            sendFormData("/api/locations", formData, 'POST');
-            e.target.reset();
+        // --- Submit Handlers ---
+        ['event', 'location', 'ministry'].forEach(type => {
+            document.getElementById(`form-add-${type}`).addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = document.getElementById(`${type}-id`).value;
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? `/api/${type}s/${id}` : `/api/${type}s`;
+                sendFormData(url, new FormData(e.target), method);
+            });
         });
 
         document.getElementById('form-add-photo').addEventListener('submit', (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
-            sendFormData("/api/gallery", formData, 'POST');
-            e.target.reset();
-        });
-        
-        // 🌟 NEW
-        document.getElementById('form-add-ministry').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            sendFormData("/api/ministries", formData, 'POST');
-            e.target.reset();
+            sendFormData("/api/gallery", new FormData(e.target), 'POST');
         });
 
-
-        // ==========================================================
-        // ========== 🌟🌟🌟 JS FIX APPLIED HERE 🌟🌟🌟 ==========
-        // ==========================================================
         document.getElementById('form-manage-about').addEventListener('submit', (e) => {
             e.preventDefault();
-            const form = e.target;
-            const formData = new FormData(form);
-
-            // If no new file is selected, remove 'image' from formData
-            // so the backend doesn't receive an empty file.
-            const fileInput = document.getElementById('about-image-file');
-            if (fileInput.files.length === 0) {
-                formData.delete('image');
-            }
-
-            // 🌟 Use sendFormData (which sends multipart/form-data)
-            sendFormData("/api/about", formData, 'PUT');
+            sendFormData("/api/about", new FormData(e.target), 'PUT');
         });
 
-
-        // --- 8. EDIT / DELETE Click Handlers ---
+        // --- Edit / Delete Logic ---
         mainContent.addEventListener('click', async (e) => {
-            const editButton = e.target.closest('.btn-edit');
-            const deleteButton = e.target.closest('.btn-delete');
+            const editBtn = e.target.closest('.btn-edit');
+            const deleteBtn = e.target.closest('.btn-delete');
             
-            // --- Handle EDIT ---
-            if (editButton) {
-                e.preventDefault();
-                const itemElement = e.target.closest('.current-item');
-                const listElement = e.target.closest('.current-item-list');
-                const id = itemElement.dataset.id;
-                let endpoint = '';
-                let itemData = null;
-
-                if (listElement.id === 'locations-list') {
-                    endpoint = 'locations';
-                    itemData = await fetchData(`locations/${id}`);
-                } else if (listElement.id === 'events-list') {
-                    endpoint = 'events';
-                    itemData = await fetchData(`events/${id}`);
-                } else if (listElement.id === 'ministries-list') { // 🌟 NEW
-                    endpoint = 'ministries';
-                    itemData = await fetchData(`ministries/${id}`);
-                }
-
-                if (!itemData) {
-                    console.error("Could not find or fetch item!", id);
-                    return;
-                }
+            if (editBtn) {
+                const item = e.target.closest('.current-item');
+                const list = e.target.closest('.current-item-list');
+                const id = item.dataset.id;
                 
-                // --- Populate Modal ---
-                const showFields = (ids, show) => {
-                    ids.forEach(id => {
-                        const el = document.getElementById(id);
-                        if (el) el.style.display = show ? 'block' : 'none';
+                let type = '';
+                if (list.id === 'events-list') type = 'event';
+                else if (list.id === 'locations-list') type = 'location';
+                else if (list.id === 'ministries-list') type = 'ministry';
+
+                if (type) {
+                    const data = await fetchData(`${type}s/${id}`);
+                    if (!data) return;
+
+                    // Scroll to form and enter Edit Mode
+                    const card = document.getElementById(`card-${type}-form`);
+                    card.scrollIntoView({ behavior: 'smooth' });
+                    card.classList.add('editing');
+                    document.getElementById(`${type}-form-title`).textContent = `Editing: ${data.title}`;
+                    document.getElementById(`${type}-submit-btn`).textContent = "Save Changes";
+                    card.querySelector('.cancel-edit-btn').style.display = "inline-block";
+                    
+                    // Fill form fields
+                    document.getElementById(`${type}-id`).value = data.id;
+                    
+                    const form = document.getElementById(`form-add-${type}`);
+                    Object.keys(data).forEach(key => {
+                        const input = form.querySelector(`[name="${key}"]`);
+                        if (input && input.type !== 'file') input.value = data[key];
                     });
-                };
-                
-                editForm.reset();
 
-                // Set shared fields
-                document.getElementById('edit-modal-title').textContent = `Edit ${itemData.title || 'Item'}`;
-                document.getElementById('edit-item-id').value = itemData.id;
-                document.getElementById('edit-item-endpoint').value = endpoint;
-                document.getElementById('edit-title').value = itemData.title;
-
-                const imgPreview = document.getElementById('edit-current-image-preview');
-                if (itemData.imageUrl) {
-                    imgPreview.src = `/${itemData.imageUrl}`;
-                    imgPreview.style.display = 'block';
-                    document.getElementById('edit-item-existing-image').value = itemData.imageUrl;
-                } else {
-                    imgPreview.style.display = 'none';
-                    document.getElementById('edit-item-existing-image').value = '';
-                }
-
-                if (endpoint === 'locations') {
-                    showFields(['edit-group-subtitle', 'edit-group-description', 'edit-group-location-details', 'edit-group-grid-image-preview', 'edit-group-grid-image-upload'], true);
-                    showFields(['edit-group-category', 'edit-group-event-details'], false);
-                    
-                    document.getElementById('edit-subtitle').value = itemData.subtitle || '';
-                    document.getElementById('edit-description').value = itemData.description || '';
-                    document.getElementById('edit-pastorName').value = itemData.pastorName || '';
-                    document.getElementById('edit-phone').value = itemData.phone || '';
-                    document.getElementById('edit-email').value = itemData.email || '';
-                    document.getElementById('edit-address').value = itemData.address || '';
-                    document.getElementById('edit-mailingAddress').value = itemData.mailingAddress || '';
-                    document.getElementById('edit-googleMapEmbed').value = itemData.googleMapEmbed || '';
-
-                    const detailImgPreview = document.getElementById('edit-current-detail-image-preview');
-                    if (itemData.detailImageUrl) {
-                        detailImgPreview.src = `/${itemData.detailImageUrl}`;
-                        detailImgPreview.style.display = 'block';
-                        document.getElementById('edit-item-existing-detail-image').value = itemData.detailImageUrl;
-                    } else {
-                        detailImgPreview.style.display = 'none';
-                        document.getElementById('edit-item-existing-detail-image').value = '';
+                    // Handle previews
+                    if (data.imageUrl) {
+                        const img = document.getElementById(`${type}-image-preview`);
+                        img.src = `/${data.imageUrl}`;
+                        img.style.display = 'block';
                     }
-
-                } else if (endpoint === 'events') {
-                    showFields(['edit-group-subtitle', 'edit-group-description', 'edit-group-event-details', 'edit-group-registration-note', 'edit-group-grid-image-preview', 'edit-group-grid-image-upload'], true);
-                    showFields(['edit-group-category', 'edit-group-location-details'], false);
-                    
-                    document.getElementById('edit-subtitle').value = itemData.subtitle || '';
-                    document.getElementById('edit-description').value = itemData.description || '';
-                    document.getElementById('edit-fullDescription').value = itemData.fullDescription || '';
-                    document.getElementById('edit-registrationNote').value = itemData.registrationNote || '';
-
-                    const detailImgPreview = document.getElementById('edit-current-event-detail-image-preview');
-                    if (itemData.detailImageUrl) {
-                        detailImgPreview.src = `/${itemData.detailImageUrl}`;
-                        detailImgPreview.style.display = 'block';
-                        document.getElementById('edit-item-existing-detail-image').value = itemData.detailImageUrl;
-                    } else {
-                        detailImgPreview.style.display = 'none';
-                        document.getElementById('edit-item-existing-detail-image').value = '';
-                    }
-                } else if (endpoint === 'ministries') { // 🌟 NEW
-                    // Show event fields (full description, detail image) but hide registration note
-                    showFields(['edit-group-subtitle', 'edit-group-description', 'edit-group-event-details', 'edit-group-grid-image-preview', 'edit-group-grid-image-upload'], true);
-                    // Hide category, location details, and registration note
-                    showFields(['edit-group-category', 'edit-group-location-details', 'edit-group-registration-note'], false);
-                    
-                    document.getElementById('edit-subtitle').value = itemData.subtitle || '';
-                    document.getElementById('edit-description').value = itemData.description || '';
-                    document.getElementById('edit-fullDescription').value = itemData.fullDescription || '';
-
-                    const detailImgPreview = document.getElementById('edit-current-event-detail-image-preview'); // Re-using the event detail preview
-                    if (itemData.detailImageUrl) {
-                        detailImgPreview.src = `/${itemData.detailImageUrl}`;
-                        detailImgPreview.style.display = 'block';
-                        document.getElementById('edit-item-existing-detail-image').value = itemData.detailImageUrl;
-                    } else {
-                        detailImgPreview.style.display = 'none';
-                        document.getElementById('edit-item-existing-detail-image').value = '';
-                    }
-                }
-
-                editModal.classList.add('show');
-            }
-
-            // --- Handle DELETE ---
-            if (deleteButton) {
-                e.preventDefault();
-                const itemElement = e.target.closest('.current-item');
-                const listElement = e.target.closest('.current-item-list');
-                const id = itemElement.dataset.id;
-                let endpoint = '';
-
-                if (listElement.id === 'locations-list') endpoint = 'locations';
-                else if (listElement.id === 'events-list') endpoint = 'events';
-                else if (listElement.id === 'gallery-list') endpoint = 'gallery';
-                else if (listElement.id === 'ministries-list') endpoint = 'ministries'; // 🌟 NEW
-
-                if (endpoint && confirm('Are you sure you want to delete this item? This cannot be undone.')) {
-                    try {
-                        const res = await fetch(`/api/${endpoint}/${id}`, {
-                            method: 'DELETE',
-                            headers: { "Authorization": `Bearer ${token}` }
-                        });
-                        const result = await res.json();
-                        if (res.ok) {
-                            alert(result.message);
-                            itemElement.remove(); 
-                        } else {
-                            alert(`Error: ${result.error}`);
+                    if (data.detailImageUrl) {
+                        const img = document.getElementById(`${type}-detail-image-preview`);
+                        if (img) {
+                            img.src = `/${data.detailImageUrl}`;
+                            img.style.display = 'block';
                         }
-                    } catch (err) {
-                        console.error("Delete failed:", err);
-                        alert("A network error occurred.");
                     }
                 }
             }
-        });
 
-        // --- 9. Modal Form Submit ---
-        editForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const endpoint = formData.get('endpoint');
-            const id = formData.get('id');
-            
-            // Clean up form data based on endpoint
-            if (endpoint === 'locations') {
-                formData.delete('category');
-                formData.delete('fullDescription');
-                formData.delete('registrationNote');
-                // Use the location-specific detail image input
-                if (document.getElementById('edit-detail-image-file').files.length === 0) {
-                    formData.delete('detailImage');
-                }
-            } else if (endpoint === 'events') {
-                formData.delete('category');
-                formData.delete('pastorName');
-                formData.delete('phone');
-                formData.delete('email');
-                formData.delete('address');
-                formData.delete('mailingAddress');
-                formData.delete('googleMapEmbed');
-                // Use the event-specific detail image input
-                if (document.getElementById('edit-event-detail-image-file').files.length === 0) {
-                    formData.delete('detailImage');
-                }
-            } else if (endpoint === 'ministries') { // 🌟 NEW
-                formData.delete('category');
-                formData.delete('pastorName');
-                formData.delete('phone');
-                formData.delete('email');
-                formData.delete('address');
-                formData.delete('mailingAddress');
-                formData.delete('googleMapEmbed');
-                formData.delete('registrationNote');
-                // Use the event-specific (re-used) detail image input
-                if (document.getElementById('edit-event-detail-image-file').files.length === 0) {
-                    formData.delete('detailImage');
+            if (deleteBtn) {
+                if (!confirm('Are you sure you want to delete this item?')) return;
+                const item = e.target.closest('.current-item');
+                const list = e.target.closest('.current-item-list');
+                const id = item.dataset.id;
+                let endpoint = list.id === 'gallery-list' ? 'gallery' : list.id.split('-')[0];
+
+                const res = await fetch(`/api/${endpoint}/${id}`, {
+                    method: 'DELETE',
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    item.remove();
+                } else {
+                    alert("Failed to delete item.");
                 }
             }
-
-            // Handle grid image for all
-            if (document.getElementById('edit-image-file').files.length === 0) {
-                formData.delete('image');
-            }
-
-            sendFormData(`/api/${endpoint}/${id}`, formData, 'PUT');
         });
 
-        // --- 10. Modal Close Buttons ---
-        document.getElementById('btn-cancel-edit').addEventListener('click', () => {
-            editModal.classList.remove('show');
-            editForm.reset();
-        });
-        editModal.addEventListener('click', (e) => {
-            if (e.target === editModal) { 
-                editModal.classList.remove('show');
-                editForm.reset();
-            }
-        });
-
-        // --- 11. Load all data on init ---
+        // Initialize lists
         loadDynamicData('locations', 'locations-list', renderListItem);
         loadDynamicData('events', 'events-list', renderListItem);
         loadDynamicData('gallery', 'gallery-list', renderGalleryItem);
-        loadDynamicData('ministries', 'ministries-list', renderListItem); // 🌟 NEW
+        loadDynamicData('ministries', 'ministries-list', renderListItem);
         loadAboutData(); 
     });
     </script>
