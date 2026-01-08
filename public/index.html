@@ -87,7 +87,7 @@
         }
         .header .cta-button:hover { background-color: #e67e22; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4); }
 
-        /* --- 3. Page Header Banner (Matches Request) --- */
+        /* --- 3. Page Header Banner --- */
         .page-header-banner { 
             color: white; 
             padding: 80px 40px; 
@@ -155,7 +155,7 @@
         .hero-left { flex: 1; min-width: 300px; } .hero-left img { width: 100%; max-width: 450px; height: auto; display: block; margin: 0 auto; } .hero-right { flex: 1.5; min-width: 300px; text-align: center; display: flex; flex-direction: column; align-items: center; } .hero-right .hero-logo { width: 200px; height: 200px; border-radius: 50%; background: rgb(6, 0, 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px; } .hero-right .hero-logo img { width: 200px; height: auto; } .hero-right h1 { font-size: 48px; font-weight: 800; margin: 0 0 15px 0; color: white; } .hero-right p { font-size: 20px; font-weight: 300; color: rgba(255, 255, 255, 0.9); margin-bottom: 30px; } .hero-buttons { display: flex; gap: 20px; } .hero-buttons .btn { padding: 14px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 16px; border: none; cursor: pointer; transition: all 0.3s; } .hero-buttons .btn-light { background: white; color: var(--hero-red-2); } .hero-buttons .btn-light:hover { background: #f0f0f0; transform: translateY(-2px); } .hero-buttons .btn-yellow { background: var(--theme-secondary); color: white; } .hero-buttons .btn-yellow:hover { background: #e67e22; transform: translateY(-2px); } .page-title { font-size: 42px; font-weight: 800; color: var(--theme-primary); text-align: center; margin-bottom: 40px; } 
         .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; } 
 
-        /* Location Grid Specific Styles (Fixed for Screenshot) */
+        /* Location Grid (Fixed for Screenshot Style) */
         #locations-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -430,6 +430,7 @@
     </header>
 
     <main>
+        <!-- Home Section -->
         <section class="page main-page" id="home">
             <div id="home-hero-content">
                 <div class="hero-left"><img src="left.png" alt="Church Altar"></div>
@@ -445,6 +446,7 @@
             </div>
         </section>
 
+        <!-- Locations Grid Section -->
         <section class="page main-page" id="locations"> 
             <div class="page-header-banner">
                 <h1>Our Locations</h1>
@@ -452,11 +454,12 @@
             </div> 
             <div class="content-container">
                 <div id="locations-grid">
-                    <!-- Location items will be injected here locally -->
+                    <!-- Fetched locally via JS -->
                 </div>
             </div> 
         </section>
 
+        <!-- Location Detail Page -->
         <section class="page" id="location-detail">
             <div class="page-header-banner">
                 <h1 id="loc-detail-title">Location Name</h1>
@@ -491,6 +494,7 @@
             </div>
         </section>
 
+        <!-- Event Detail Page -->
         <section class="page" id="event-detail">
             <div class="page-header-banner">
                 <h1 id="evt-detail-title">Event Name</h1>
@@ -534,6 +538,7 @@
             </div>
         </section>
 
+        <!-- Ministry Detail Page -->
         <section class="page" id="ministry-detail">
             <div class="page-header-banner">
                 <h1 id="min-detail-title">Ministry Name</h1>
@@ -549,7 +554,7 @@
             </div>
         </section>
 
-
+        <!-- Ministries Grid Section -->
         <section class="page main-page" id="ministries"> 
             <div class="page-header-banner"><h1>Our Ministries</h1><p class="breadcrumbs">Home - <span>Ministries</span></p></div> 
             <div class="content-container">
@@ -558,6 +563,7 @@
             </div> 
         </section>
         
+        <!-- Events Grid Section -->
         <section class="page main-page" id="events"> 
             <div class="page-header-banner"><h1>Upcoming Events</h1><p class="breadcrumbs">Home - <span>Events</span></p></div> 
             <div class="content-container">
@@ -566,6 +572,7 @@
             </div> 
         </section>
         
+        <!-- About Section -->
         <section class="page main-page" id="about"> 
             <div class="page-header-banner"><h1>About Us</h1><p class="breadcrumbs">Home - <span>About</span></p></div> 
             <div class="content-container">
@@ -583,21 +590,52 @@
             </div> 
         </section>
         
-        <section class="page main-page" id="gallery"> <div class="page-header-banner"><h1>Gallery</h1><p class="breadcrumbs">Home - <span>Gallery</span></p></div> <div class="content-container"><div class="gallery-filters"><button class="gallery-filter-btn active" data-filter="all">All</button><button class="gallery-filter-btn" data-filter="social">Social Work</button><button class="gallery-filter-btn" data-filter="events">Events</button><button class="gallery-filter-btn" data-filter="pastors">Pastors</button><button class="gallery-filter-btn" data-filter="functions">Functions</button></div><div class="photo-gallery" id="gallery-grid"></div></div> </section>
+        <!-- Gallery Section -->
+        <section class="page main-page" id="gallery"> 
+            <div class="page-header-banner"><h1>Gallery</h1><p class="breadcrumbs">Home - <span>Gallery</span></p></div> 
+            <div class="content-container">
+                <div class="gallery-filters">
+                    <button class="gallery-filter-btn active" data-filter="all">All</button>
+                    <button class="gallery-filter-btn" data-filter="social">Social Work</button>
+                    <button class="gallery-filter-btn" data-filter="events">Events</button>
+                    <button class="gallery-filter-btn" data-filter="pastors">Pastors</button>
+                    <button class="gallery-filter-btn" data-filter="functions">Functions</button>
+                </div>
+                <div class="photo-gallery" id="gallery-grid"></div>
+            </div> 
+        </section>
         
-        <section class="page main-page" id="connect"> <div class="page-header-banner"><h1>Get Connected</h1><p class="breadcrumbs">Home - <span>Connect</span></p></div> <div class="content-container"><div class="form-container"><p class="text-center">Have questions or want to learn more? Fill out the form below and we'll get in touch!</p>
+        <!-- Connect Section -->
+        <section class="page main-page" id="connect"> 
+            <div class="page-header-banner"><h1>Get Connected</h1><p class="breadcrumbs">Home - <span>Connect</span></p></div> 
+            <div class="content-container">
+                <div class="form-container"><p class="text-center">Have questions or want to learn more? Fill out the form below and we'll get in touch!</p>
+                    <form id="connect-form">
+                        <div class="form-group"><label for="connect-name">Name</label><input type="text" id="connect-name" required></div>
+                        <div class="form-group"><label for="connect-email">Email</label><input type="email" id="connect-email" required></div>
+                        <div class="form-group"><label for="connect-phonenumber">Phone Number</label><input type="phonenumber" id="connect-phonenumber" required></div>
+                        <div class="form-group"><label for="connect-message">Message</label><textarea id="connect-message"></textarea></div>
+                        <div class="text-center"><button type="submit" class="btn-primary">Send Message</button></div>
+                    </form>
+                </div>
+            </div> 
+        </section>
         
-            <form id="connect-form">
-                <div class="form-group"><label for="connect-name">Name</label><input type="text" id="connect-name" required></div>
-                <div class="form-group"><label for="connect-email">Email</label><input type="email" id="connect-email" required></div>
-                <div class="form-group"><label for="connect-phonenumber">Phone Number</label><input type="phonenumber" id="connect-phonenumber" required></div>
-                <div class="form-group"><label for="connect-message">Message</label><textarea id="connect-message"></textarea></div>
-                <div class="text-center"><button type="submit" class="btn-primary">Send Message</button></div>
-            </form>
-            </div></div> </section>
+        <!-- HC Live Section -->
+        <section class="page main-page" id="hc-live"> 
+            <div class="page-header-banner"><h1>Watch Live</h1><p class="breadcrumbs">Home - <span>Live</span></p></div> 
+            <div class="content-container">
+                <div class="video-placeholder">
+                    <div class="video-placeholder-content">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+                        <h3>Service is Live</h3>
+                    </div>
+                </div>
+                <p class="text-center" style="font-size: 18px; margin-top: 20px;">Join us live every Sunday at 9:00 AM & 11:00 AM.</p>
+            </div> 
+        </section>
         
-        <section class="page main-page" id="hc-live"> <div class="page-header-banner"><h1>Watch Live</h1><p class="breadcrumbs">Home - <span>Live</span></p></div> <div class="content-container"><div class="video-placeholder"><div class="video-placeholder-content"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg><h3>Service is Live</h3></div></div><p class="text-center" style="font-size: 18px; margin-top: 20px;">Join us live every Sunday at 9:00 AM & 11:00 AM.</p></div> </section>
-        
+        <!-- Giving Section -->
         <section class="page main-page" id="giving"> 
             <div class="page-header-banner"><h1>Giving</h1><p class="breadcrumbs">Home - <span>Giving</span></p></div> 
             <div class="content-container" id="giving-content">
@@ -612,7 +650,6 @@
                     </p>
                     
                     <form id="giving-form">
-                    
                         <div class="form-group">
                             <label>Donation Amount ($)</label>
                             <div class="donation-amount-options">
@@ -636,15 +673,6 @@
                                 <option value="weekly">Weekly</option>
                             </select>
                         </div>
-
-                        <div class="form-group" style="display:none;"> <label for="giving-fund">Designation (Fund)</label>
-                            <select id="giving-fund">
-                                <option value="general">General Fund (Tithes)</option>
-                                <option value="missions">Missions</option>
-                                <option value="building">Building Fund</option>
-                                <option value="community">Community Outreach</option>
-                            </select>
-                        </div>
                         
                         <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
 
@@ -659,15 +687,15 @@
 
                         <div class="form-group">
                             <label for="card-element">Credit or Debit Card</label>
-                            <div id="card-element">
-                                </div>
+                            <div id="card-element"></div>
                             <div id="card-errors" role="alert"></div>
                         </div>
                         <div class="text-center" style="margin-top: 30px;">
                             <button type="submit" class="donate-button-large" id="giving-submit-button" style="font-size: 18px; padding: 15px 40px; border: none; width: 100%; cursor: pointer;">
                                 Give Securely Now
                             </button>
-                            <div id="payment-status"></div> <small style="display: block; margin-top: 15px; color: #777;">
+                            <div id="payment-status"></div>
+                            <small style="display: block; margin-top: 15px; color: #777;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px; margin-bottom: 2px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                                 All transactions are secure and encrypted.
                             </small>
@@ -676,67 +704,74 @@
                 </div>
             </div> 
         </section>
-        <section class="page main-page" id="plan-visit"> <div class="page-header-banner"><h1>Plan Your Visit</h1><p class="breadcrumbs">Home - <span>Plan Your Visit</span></p></div> <div class="content-container"><div class="form-container"><p class="text-center">We're excited to have you join us! Let us know you're coming and we'll roll out the red carpet. We have a special gift waiting for you at our Welcome Center.</p>
+
+        <!-- Plan Visit Section -->
+        <section class="page main-page" id="plan-visit"> 
+            <div class="page-header-banner"><h1>Plan Your Visit</h1><p class="breadcrumbs">Home - <span>Plan Your Visit</span></p></div> 
+            <div class="content-container">
+                <div class="form-container">
+                    <p class="text-center">We're excited to have you join us! Let us know you're coming and we'll roll out the red carpet.</p>
+                    <form id="plan-visit-form">
+                        <div class="form-group"><label for="visit-name">Name</label><input type="text" id="visit-name" required></div>
+                        <div class="form-group"><label for="visit-email">Email</label><input type="email" id="visit-email" required></div>
+                        <div class="form-group"><label for="visit-phonenumber">Phone Number</label><input type="phonenumber" id="visit-phonenumber" required></div>
+                        <div class="form-group"><label for="visit-service">Which service will you attend?</label><select id="visit-service"><option>Sunday 9:00 AM</option><option>Sunday 11:00 AM</option></select></div>
+                        <div class="text-center"><button type="submit" class="btn-primary">Let Us Know!</button></div>
+                    </form>
+                </div>
+            </div> 
+        </section>
         
-            <form id="plan-visit-form">
-                <div class="form-group"><label for="visit-name">Name</label><input type="text" id="visit-name" required></div>
-                <div class="form-group"><label for="visit-email">Email</label><input type="email" id="visit-email" required></div>
-                <div class="form-group"><label for="visit-phonenumber">Phone Number</label><input type="phonenumber" id="visit-phonenumber" required></div>
-                <div class="form-group"><label for="visit-service">Which service will you attend?</label><select id="visit-service"><option>Sunday 9:00 AM</option><option>Sunday 11:00 AM</option></select></div>
-                <div class="text-center"><button type="submit" class="btn-primary">Let Us Know!</button></div>
-            </form>
-            </div></div> </section>
-        
-        <footer class="footer-enhanced"> <div class="footer-container"> <div class="footer-column"> <div class="footer-logo"> <img src="logo.png" alt="Full Gospel Ministries Logo" class="footer-img" /> FULL GOSPEL MINISTRIES </div> <p>Leading people into a growing relationship with Jesus Christ through faith, hope, and love.</p> <div class="social-icons"> <a href="#" title="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a> <a href="#" title="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a> <a href="#" title="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2A29 29 0 0 0 23 11.75a29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg></a> </div> </div> <div class="footer-column"> <h4>Quick Links</h4> <ul> <li><a href="#" class="nav-link" data-page="home">Home</a></li> <li><a href="#" class="nav-link" data-page="about">About Us</a></li> <li><a href="#" class="nav-link" data-page="events">Events</a></li> <li><a href="#" class="nav-link" data-page="gallery">Gallery</a></li> <li><a href="#" class="nav-link" data-page="connect">Connect</a></li> <li><a href="#" class="nav-link" data-page="hc-live">Watch Live</a></li> </ul> </div> <div class="footer-column"> <h4>Ministries</h4> <ul> <li><a href="#" class="nav-link" data-page="ministries">Gospel Kids</a></li> <li><a href="#" class="nav-link" data-page="ministries">Impact Youth</a></li> <li><a href="#" class="nav-link" data-page="ministries">Community Groups</a></li> <li><a href="#" class="nav-link" data-page="locations">Our Locations</a></li> </ul> </div> <div class="footer-column"> <h4>Contact Us</h4> <p><strong>Location:</strong><br>123 Gospel Way, Faith City, 12345</p> <p><strong>Email:</strong><br><a href="mailto:contact@fullgospel.org">contact@fullgospel.org</a></p> <p><strong>Phone:</strong><br>(123) 456-7890</p> </div> </div> <div class="footer-copyright"><p>© 2025 FULL GOSPEL MINISTRIES. All Rights Reserved.</p></div> </footer>
+        <footer class="footer-enhanced"> 
+            <div class="footer-container"> 
+                <div class="footer-column"> 
+                    <div class="footer-logo"> 
+                        <img src="logo.png" alt="Full Gospel Ministries Logo" class="footer-img" /> FULL GOSPEL MINISTRIES 
+                    </div> 
+                    <p>Leading people into a growing relationship with Jesus Christ through faith, hope, and love.</p> 
+                    <div class="social-icons"> 
+                        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                    </div> 
+                </div> 
+                <div class="footer-column"> 
+                    <h4>Quick Links</h4> 
+                    <ul> 
+                        <li><a href="#" class="nav-link" data-page="home">Home</a></li> 
+                        <li><a href="#" class="nav-link" data-page="about">About Us</a></li> 
+                        <li><a href="#" class="nav-link" data-page="events">Events</a></li> 
+                        <li><a href="#" class="nav-link" data-page="gallery">Gallery</a></li> 
+                    </ul> 
+                </div> 
+                <div class="footer-column"> 
+                    <h4>Contact Us</h4> 
+                    <p><strong>Location:</strong><br>123 Gospel Way, Faith City, 12345</p> 
+                    <p><strong>Email:</strong><br><a href="mailto:contact@fullgospel.org">contact@fullgospel.org</a></p> 
+                </div> 
+            </div> 
+            <div class="footer-copyright"><p>© 2025 FULL GOSPEL MINISTRIES. All Rights Reserved.</p></div> 
+        </footer>
     </main>
 
-
     <script>
-        // --- LOCAL DATA (Fixes TypeError: Failed to parse URL) ---
-        const LOCAL_DATA = {
-            locations: [
-                { id: '1', title: 'FAITH CITY', subtitle: 'Sundays @ 9:00 AM', description: 'Our main campus located in the heart of the city.', pastorName: 'Pastor John Doe', phone: '(123) 456-7890', email: 'faithcity@fgm.org', address: '123 Faith St, Faith City', mailingAddress: 'PO Box 1, Faith City', googleMapEmbed: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.9537353153161!3d-37.81033297975171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0x5045675218ce6e0!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1616161616161!5m2!1sen!2sus"></iframe>' },
-                { id: '2', title: 'GRACE TOWN', subtitle: 'Sundays @ 11:00 AM', description: 'A vibrant community center in Grace Town.', pastorName: 'Pastor Jane Smith', phone: '(123) 456-7891', email: 'gracetown@fgm.org', address: '456 Grace Ave, Grace Town', mailingAddress: 'PO Box 2, Grace Town', googleMapEmbed: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.9537353153161!3d-37.81033297975171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0x5045675218ce6e0!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1616161616161!5m2!1sen!2sus"></iframe>' },
-                { id: '3', title: 'HOPE VILLAGE', subtitle: 'Sundays @ 10:30 AM', description: 'Our newest campus serving the local villages.', pastorName: 'Pastor Bob Wilson', phone: '(123) 456-7892', email: 'hopevillage@fgm.org', address: '789 Hope Rd, Hope Village', mailingAddress: 'PO Box 3, Hope Village', googleMapEmbed: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.9537353153161!3d-37.81033297975171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0x5045675218ce6e0!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1616161616161!5m2!1sen!2sus"></iframe>' }
-            ],
-            events: [
-                { id: '1', title: 'Grand Worship', subtitle: 'January 15th, 10:00 AM', description: 'A special joint service for all locations.', fullDescription: 'Join us for a morning of powerful worship, testimonials, and a transformative message. We invite everyone to bring their friends and family.', imageUrl: 'https://placehold.co/400x200/ff7e5f/white?text=Grand+Worship', registrationNote: 'Limited seating available.' },
-                { id: '2', title: 'Youth Night', subtitle: 'Every Friday @ 7:00 PM', description: 'Fun, fellowship, and faith for the next generation.', fullDescription: 'A safe space for teenagers to grow together and learn about their purpose. Games, music, and group discussions.', imageUrl: 'https://placehold.co/400x200/f39c12/white?text=Youth+Night', registrationNote: 'Sign up required for refreshments.' }
-            ],
-            ministries: [
-                { id: '1', title: 'Gospel Kids', subtitle: 'Ages 3-12', description: 'Teaching children the word of God in a fun way.', fullDescription: 'Our children ministry focuses on building a strong biblical foundation through storytelling, crafts, and interactive play.', imageUrl: 'https://placehold.co/400x200/2c3e50/white?text=Gospel+Kids' },
-                { id: '2', title: 'Impact Youth', subtitle: 'Ages 13-19', description: 'Empowering young people to lead and serve.', fullDescription: 'We help teenagers navigate life challenges using Godly wisdom and provide opportunities for community service.', imageUrl: 'https://placehold.co/400x200/000604/white?text=Impact+Youth' }
-            ],
-            gallery: [
-                { category: 'social', imageUrl: 'https://placehold.co/600x400/ddd/333?text=Community+Work' },
-                { category: 'events', imageUrl: 'https://placehold.co/600x400/ddd/333?text=Church+Concert' },
-                { category: 'pastors', imageUrl: 'https://placehold.co/600x400/ddd/333?text=Pastors+Team' },
-                { category: 'functions', imageUrl: 'https://placehold.co/600x400/ddd/333?text=Family+Day' }
-            ],
-            about: {
-                ourMission: "Leading people into a growing relationship with Jesus Christ through faith, hope, and love.",
-                ourStory: "Founded in 1995, Full Gospel Ministries started with just a small group of faithful believers. Today, we serve thousands across multiple campuses.",
-                imageUrl: 'https://placehold.co/600x400/00684a/white?text=Our+Church+Story'
-            }
-        };
-
-        // 🌟 --- STRIPE --- 🌟
+        // --- 🌟 REAL API CONFIG 🌟 ---
         const STRIPE_PUBLISHABLE_KEY = 'pk_test_51SQ0j92Xeia7fcoMdTiMrGOk61t5HpypR65b9hkQ30nEs0SlA5GBkblIRH99mo4sWKhKG7RCsk9Aiun70odSBoPY00oVPZmbx4';
-        let stripe;
-        let cardElement;
+        let stripe, cardElement;
+
         try {
             stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
             const elements = stripe.elements();
             cardElement = elements.create('card');
         } catch (e) {
-            console.error('Stripe failed to initialize.', e);
+            console.error('Stripe failed to initialize.');
         }
-        
+
+        // Fix for scroll restoration on refresh
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
         }
 
-        // --- FORM HANDLING (Mocked for Demo) ---
+        // --- 🌟 REAL FETCH FUNCTIONS 🌟 ---
+
         async function handleFormSubmit(event, apiEndpoint, successMessage, getFormData) {
             event.preventDefault();
             const form = event.target;
@@ -745,281 +780,271 @@
             button.textContent = 'Sending...';
             button.disabled = true;
 
-            setTimeout(() => {
-                alert(successMessage);
-                form.reset();
+            try {
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(getFormData())
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    alert(successMessage);
+                    form.reset();
+                } else {
+                    throw new Error(result.error || 'Server error');
+                }
+            } catch (err) {
+                alert('Submission failed: ' + err.message);
+            } finally {
                 button.textContent = originalButtonText;
                 button.disabled = false;
-            }, 1000);
+            }
         }
 
-        function handleConnectSubmit(event) { handleFormSubmit(event, '', 'Thank you! Your message has been sent.', () => ({})); }
-        function handlePlanVisitSubmit(event) { handleFormSubmit(event, '', 'Thank you! We look forward to seeing you.', () => ({})); }
-        function handleEventRegistrationSubmit(event) { handleFormSubmit(event, '', 'Thank you for registering!', () => ({})); }
-        
         async function handleGivingSubmit(event) {
             event.preventDefault();
             const button = document.getElementById('giving-submit-button');
             const statusDiv = document.getElementById('payment-status');
             button.textContent = 'Processing...';
             button.disabled = true;
-            setTimeout(() => {
-                statusDiv.textContent = 'Thank you! Your donation was successful (Demo Mode).';
-                statusDiv.className = 'payment-success';
-                event.target.reset();
+
+            try {
+                const amount = document.querySelector('input[name="amount"]:checked').value === 'other' 
+                    ? document.getElementById('giving-other-amount').value 
+                    : document.querySelector('input[name="amount"]:checked').value;
+
+                const response = await fetch('/api/create-payment-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount, email: document.getElementById('giving-email').value })
+                });
+                const { clientSecret } = await response.json();
+                const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: { card: cardElement }
+                });
+
+                if (error) throw new Error(error.message);
+                if (paymentIntent.status === 'succeeded') {
+                    statusDiv.textContent = 'Thank you for your donation!';
+                    statusDiv.className = 'payment-success';
+                    event.target.reset();
+                    cardElement.clear();
+                }
+            } catch (err) {
+                statusDiv.textContent = 'Payment error: ' + err.message;
+                statusDiv.className = 'payment-error';
+            } finally {
                 button.textContent = 'Give Securely Now';
                 button.disabled = false;
-                cardElement.clear();
-            }, 1500);
+            }
         }
-        
-        // --- NAVIGATION & LOADING ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const pages = document.querySelectorAll('.page');
-            const main = document.querySelector('main');
-            const body = document.body;
-            const header = document.querySelector('.header'); 
-            const footer = document.querySelector('.footer-enhanced'); 
-            const locationsGrid = document.getElementById('locations-grid');
-            const eventsGrid = document.getElementById('events-grid');
-            const ministriesGrid = document.getElementById('ministries-grid');
 
-            // --- Gallery Filter Logic ---
-            const filterButtons = document.querySelectorAll('.gallery-filter-btn');
-            const photoGallery = document.getElementById('gallery-grid');
-            if (filterButtons.length > 0) { 
-                filterButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        const filter = button.getAttribute('data-filter');
-                        filterButtons.forEach(btn => btn.classList.remove('active'));
-                        button.classList.add('active');
-                        const photoItems = photoGallery.querySelectorAll('.photo-item');
-                        photoItems.forEach(item => {
-                            const category = item.getAttribute('data-category');
-                            item.classList.toggle('hide', filter !== 'all' && filter !== category);
-                        });
-                    });
-                });
-            }
-            
-            const amountRadios = document.querySelectorAll('.donation-amount-options input[name="amount"]');
-            const otherAmountInput = document.getElementById('giving-other-amount');
-            if (amountRadios.length > 0 && otherAmountInput) {
-                amountRadios.forEach(radio => {
-                    radio.addEventListener('change', () => {
-                        if (radio.value === 'other') {
-                            otherAmountInput.style.display = 'block';
-                            otherAmountInput.focus();
-                            otherAmountInput.required = true; 
-                        } else {
-                            otherAmountInput.style.display = 'none';
-                            otherAmountInput.value = '';
-                            otherAmountInput.required = false; 
-                        }
-                    });
-                });
-            }
+        // --- 🌟 REAL DATA LOADERS 🌟 ---
 
-            // --- Fixed setMode (Removed pushState to fix SecurityError) ---
-            function setMode(mode, targetPageId = null) {
-                const homePageElement = document.getElementById('home'); 
-                pages.forEach(page => page.classList.remove('active'));
-                
-                if (mode === 'scroll-snap') {
-                    body.classList.add('scroll-snap-active');
-                    footer.style.display = 'block'; 
-                    homePageElement.classList.add('active'); 
-                    main.scrollTo({ top: 0, behavior: 'auto' }); 
-                    handleHeaderState(); 
-                } else if (mode === 'single-page') {
-                    body.classList.remove('scroll-snap-active');
-                    const targetPage = document.getElementById(targetPageId);
-                    if (targetPage) {
-                        targetPage.classList.add('active');
-                    } else {
-                        homePageElement.classList.add('active');
-                    }
-                    footer.style.display = 'block'; 
-                    window.scrollTo({ top: 0, behavior: 'auto' }); 
-                    header.classList.add('header-solid'); 
-                    handleHeaderState(); 
-                }
-            }
-            
-            const handleHeaderState = () => {
-                const isSnapMode = body.classList.contains('scroll-snap-active');
-                let scrollTop = isSnapMode ? main.scrollTop : window.scrollY; 
-                if (window.innerWidth <= 1050 || !isSnapMode || scrollTop > 10) {
-                    header.classList.add('header-solid');
-                } else {
-                    header.classList.remove('header-solid');
-                }
-            };
-            window.addEventListener('scroll', handleHeaderState); 
-            main.addEventListener('scroll', handleHeaderState);      
-            
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault(); 
-                    const pageId = link.getAttribute('data-page');
-                    if (!pageId) return;
-                    if (pageId === 'home') {
-                        setMode('scroll-snap', 'home');
-                    } else {
-                        setMode('single-page', pageId); 
-                    }
-                });
-            });
-
-            // --- LOADING FROM LOCAL DATA (Fixes Fetch Errors) ---
-            function showLocationDetail(locationId) {
-                const loc = LOCAL_DATA.locations.find(l => l.id === locationId);
-                if (!loc) return;
-                document.getElementById('loc-detail-title').textContent = loc.title;
-                document.getElementById('loc-detail-breadcrumb').textContent = loc.title;
-                const detailImg = document.getElementById('loc-detail-image');
-                detailImg.src = 'https://placehold.co/600x400/ccc/white?text=' + loc.title.replace(' ', '+');
-                document.getElementById('loc-detail-pastorName').textContent = loc.pastorName;
-                document.getElementById('loc-detail-phone').querySelector('span').textContent = loc.phone;
-                document.getElementById('loc-detail-email').querySelector('span').textContent = loc.email;
-                document.getElementById('loc-detail-address').querySelector('span').innerHTML = loc.address.replace(/\n/g, '<br>');
-                document.getElementById('loc-detail-mailingAddress').querySelector('span').innerHTML = loc.mailingAddress.replace(/\n/g, '<br>');
-                document.getElementById('loc-detail-serviceTimes').querySelector('span').textContent = loc.subtitle;
-                document.getElementById('loc-detail-map-embed').innerHTML = loc.googleMapEmbed;
-                setMode('single-page', 'location-detail');
-            }
-
-            function showEventDetail(eventId) {
-                const evt = LOCAL_DATA.events.find(e => e.id === eventId);
-                if (!evt) return;
-                document.getElementById('evt-detail-title').textContent = evt.title;
-                document.getElementById('evt-detail-breadcrumb').textContent = evt.title;
-                document.getElementById('evt-detail-image').src = evt.imageUrl;
-                document.getElementById('evt-detail-subtitle').textContent = evt.subtitle;
-                document.getElementById('evt-detail-fullDescription').innerHTML = evt.fullDescription.replace(/\n/g, '<br>');
-                setMode('single-page', 'event-detail');
-            }
-            
-            function showMinistryDetail(ministryId) {
-                const min = LOCAL_DATA.ministries.find(m => m.id === ministryId);
-                if (!min) return;
-                document.getElementById('min-detail-title').textContent = min.title;
-                document.getElementById('min-detail-breadcrumb').textContent = min.title;
-                document.getElementById('min-detail-image').src = min.imageUrl;
-                document.getElementById('min-detail-subtitle').textContent = min.subtitle;
-                document.getElementById('min-detail-fullDescription').innerHTML = min.fullDescription.replace(/\n/g, '<br>');
-                setMode('single-page', 'ministry-detail');
-            }
-
-            function loadLocationsWebsite() {
-                if (!locationsGrid) return;
-                locationsGrid.innerHTML = ""; 
-                LOCAL_DATA.locations.forEach(loc => {
-                    const cardHtml = `
+        async function loadLocationsWebsite() {
+            const grid = document.getElementById('locations-grid');
+            if (!grid) return;
+            try {
+                const res = await fetch('api/locations'); // Note: removed leading slash to avoid parse errors in some blob envs
+                const locations = await res.json();
+                grid.innerHTML = locations.map(loc => `
                     <div class="location-btn-card" data-id="${loc.id}">
                         <div class="loc-icon-circle">
                             <svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg>
                         </div>
                         <h3>${loc.title}</h3>
-                    </div>`;
-                    locationsGrid.innerHTML += cardHtml;
-                });
-            }
+                    </div>
+                `).join('');
+            } catch (err) { console.error("Error loading locations:", err); }
+        }
 
-            function loadEventsWebsite() {
-                const grid = document.getElementById('events-grid');
-                if (!grid) return;
-                grid.innerHTML = ""; 
-                LOCAL_DATA.events.forEach(event => {
-                    const cardHtml = `
-                    <div class="info-card" data-id="${event.id}">
-                        <img src="${event.imageUrl}" alt="${event.title}">
+        async function showLocationDetail(id) {
+            try {
+                const res = await fetch(`api/locations/${id}`);
+                const loc = await res.json();
+                document.getElementById('loc-detail-title').textContent = loc.title;
+                document.getElementById('loc-detail-breadcrumb').textContent = loc.title;
+                document.getElementById('loc-detail-image').src = loc.detailImageUrl ? loc.detailImageUrl : (loc.imageUrl || 'https://placehold.co/600x400');
+                document.getElementById('loc-detail-pastorName').textContent = loc.pastorName || '';
+                document.getElementById('loc-detail-phone').querySelector('span').textContent = loc.phone || 'N/A';
+                document.getElementById('loc-detail-email').querySelector('span').textContent = loc.email || 'N/A';
+                document.getElementById('loc-detail-address').querySelector('span').innerHTML = (loc.address || 'N/A').replace(/\n/g, '<br>');
+                document.getElementById('loc-detail-mailingAddress').querySelector('span').innerHTML = (loc.mailingAddress || 'N/A').replace(/\n/g, '<br>');
+                document.getElementById('loc-detail-serviceTimes').querySelector('span').textContent = loc.subtitle || 'N/A';
+                document.getElementById('loc-detail-map-embed').innerHTML = loc.googleMapEmbed || '';
+                setMode('single-page', 'location-detail');
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadEventsWebsite() {
+            const grid = document.getElementById('events-grid');
+            if (!grid) return;
+            try {
+                const res = await fetch('api/events');
+                const events = await res.json();
+                grid.innerHTML = events.map(evt => `
+                    <div class="info-card" data-id="${evt.id}">
+                        <img src="${evt.imageUrl || 'https://placehold.co/400x200'}" alt="${evt.title}">
                         <div class="info-card-content">
-                            <h3>${event.title}</h3>
-                            <div class="info-card-subtitle">${event.subtitle}</div>
-                            <p>${event.description}</p>
+                            <h3>${evt.title}</h3>
+                            <div class="info-card-subtitle">${evt.subtitle}</div>
+                            <p>${evt.description}</p>
                         </div>
-                    </div>`;
-                    grid.innerHTML += cardHtml;
-                });
-            }
-            
-            function loadMinistriesWebsite() {
-                const grid = document.getElementById('ministries-grid');
-                if (!grid) return;
-                grid.innerHTML = ""; 
-                LOCAL_DATA.ministries.forEach(item => {
-                    const cardHtml = `
-                    <div class="info-card" data-id="${item.id}">
-                        <img src="${item.imageUrl}" alt="${item.title}">
+                    </div>
+                `).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        async function showEventDetail(id) {
+            try {
+                const res = await fetch(`api/events/${id}`);
+                const evt = await res.json();
+                document.getElementById('evt-detail-title').textContent = evt.title;
+                document.getElementById('evt-detail-breadcrumb').textContent = evt.title;
+                document.getElementById('evt-detail-image').src = evt.detailImageUrl || evt.imageUrl;
+                document.getElementById('evt-detail-subtitle').textContent = evt.subtitle;
+                document.getElementById('evt-detail-fullDescription').innerHTML = (evt.fullDescription || evt.description).replace(/\n/g, '<br>');
+                setMode('single-page', 'event-detail');
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadMinistriesWebsite() {
+            const grid = document.getElementById('ministries-grid');
+            if (!grid) return;
+            try {
+                const res = await fetch('api/ministries');
+                const list = await res.json();
+                grid.innerHTML = list.map(m => `
+                    <div class="info-card" data-id="${m.id}">
+                        <img src="${m.imageUrl || 'https://placehold.co/400x200'}" alt="${m.title}">
                         <div class="info-card-content">
-                            <h3>${item.title}</h3>
-                            <div class="info-card-subtitle">${item.subtitle}</div>
-                            <p>${item.description}</p>
+                            <h3>${m.title}</h3>
+                            <div class="info-card-subtitle">${m.subtitle}</div>
+                            <p>${m.description}</p>
                         </div>
-                    </div>`;
-                    grid.innerHTML += cardHtml;
-                });
-            }
+                    </div>
+                `).join('');
+            } catch (err) { console.error(err); }
+        }
 
-            function loadGalleryWebsite() {
-                const gallery = document.getElementById('gallery-grid');
-                if (!gallery) return;
-                gallery.innerHTML = ""; 
-                LOCAL_DATA.gallery.forEach(photo => {
-                    const photoHtml = `<div class="photo-item" data-category="${photo.category}"><img src="${photo.imageUrl}" alt="Gallery photo"></div>`;
-                    gallery.innerHTML += photoHtml;
-                });
-            }
-            
-            function loadAboutWebsite() {
-                document.getElementById('about-mission-text').innerHTML = LOCAL_DATA.about.ourMission;
-                document.getElementById('about-story-text').innerHTML = LOCAL_DATA.about.ourStory;
-                document.getElementById('about-image').src = LOCAL_DATA.about.imageUrl;
-            }
+        async function showMinistryDetail(id) {
+            try {
+                const res = await fetch(`api/ministries/${id}`);
+                const min = await res.json();
+                document.getElementById('min-detail-title').textContent = min.title;
+                document.getElementById('min-detail-breadcrumb').textContent = min.title;
+                document.getElementById('min-detail-image').src = min.detailImageUrl || min.imageUrl;
+                document.getElementById('min-detail-subtitle').textContent = min.subtitle;
+                document.getElementById('min-detail-fullDescription').innerHTML = (min.fullDescription || min.description).replace(/\n/g, '<br>');
+                setMode('single-page', 'ministry-detail');
+            } catch (err) { console.error(err); }
+        }
 
-            // Click Events
-            if (locationsGrid) {
-                locationsGrid.addEventListener('click', (e) => {
-                    const card = e.target.closest('.location-btn-card');
-                    if (card) showLocationDetail(card.dataset.id);
-                });
-            }
-            if (eventsGrid) {
-                eventsGrid.addEventListener('click', (e) => {
-                    const card = e.target.closest('.info-card');
-                    if (card) showEventDetail(card.dataset.id);
-                });
-            }
-            if (ministriesGrid) {
-                ministriesGrid.addEventListener('click', (e) => {
-                    const card = e.target.closest('.info-card');
-                    if (card) showMinistryDetail(card.dataset.id);
-                });
-            }
+        async function loadGalleryWebsite() {
+            const gallery = document.getElementById('gallery-grid');
+            if (!gallery) return;
+            try {
+                const res = await fetch('api/gallery');
+                const photos = await res.json();
+                gallery.innerHTML = photos.map(p => `
+                    <div class="photo-item" data-category="${p.category}"><img src="${p.imageUrl}" alt="Gallery"></div>
+                `).join('');
+            } catch (err) { console.error(err); }
+        }
 
-            // Stripe Mount
-            if (cardElement) {
-                cardElement.mount('#card-element');
+        async function loadAboutWebsite() {
+            try {
+                const res = await fetch('api/about');
+                const data = await res.json();
+                document.getElementById('about-mission-text').innerHTML = data.ourMission || '';
+                document.getElementById('about-story-text').innerHTML = data.ourStory || '';
+                if (data.imageUrl) document.getElementById('about-image').src = data.imageUrl;
+            } catch (err) { console.error(err); }
+        }
+
+        // --- 🌟 NAVIGATION LOGIC 🌟 ---
+
+        function setMode(mode, targetPageId = null) {
+            const pages = document.querySelectorAll('.page');
+            const homePage = document.getElementById('home');
+            const body = document.body;
+            const header = document.querySelector('.header');
+            
+            pages.forEach(p => p.classList.remove('active'));
+            
+            if (mode === 'scroll-snap') {
+                body.classList.add('scroll-snap-active');
+                homePage.classList.add('active');
+                document.querySelector('main').scrollTo({ top: 0 });
+                handleHeaderState();
+            } else {
+                body.classList.remove('scroll-snap-active');
+                const target = document.getElementById(targetPageId);
+                if (target) target.classList.add('active');
+                window.scrollTo({ top: 0 });
+                header.classList.add('header-solid');
             }
-            
-            // Initial Page State
-            setMode('scroll-snap'); 
-            
-            // Listeners
+        }
+
+        function handleHeaderState() {
+            const isSnap = document.body.classList.contains('scroll-snap-active');
+            const scrollTop = isSnap ? document.querySelector('main').scrollTop : window.scrollY;
+            const header = document.querySelector('.header');
+            if (window.innerWidth <= 1050 || !isSnap || scrollTop > 10) {
+                header.classList.add('header-solid');
+            } else {
+                header.classList.remove('header-solid');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial UI state
+            setMode('scroll-snap');
+
+            // Scroll Listeners
+            window.addEventListener('scroll', handleHeaderState);
+            document.querySelector('main').addEventListener('scroll', handleHeaderState);
             window.addEventListener('resize', handleHeaderState);
-            document.getElementById('connect-form')?.addEventListener('submit', handleConnectSubmit);
-            document.getElementById('plan-visit-form')?.addEventListener('submit', handlePlanVisitSubmit);
-            document.getElementById('event-registration-form')?.addEventListener('submit', handleEventRegistrationSubmit);
+
+            // Nav Links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const pageId = link.getAttribute('data-page');
+                    if (pageId) {
+                        e.preventDefault();
+                        if (pageId === 'home') setMode('scroll-snap');
+                        else setMode('single-page', pageId);
+                    }
+                });
+            });
+
+            // Grid Click Events
+            document.getElementById('locations-grid')?.addEventListener('click', e => {
+                const card = e.target.closest('.location-btn-card');
+                if (card) showLocationDetail(card.dataset.id);
+            });
+            document.getElementById('events-grid')?.addEventListener('click', e => {
+                const card = e.target.closest('.info-card');
+                if (card) showEventDetail(card.dataset.id);
+            });
+            document.getElementById('ministries-grid')?.addEventListener('click', e => {
+                const card = e.target.closest('.info-card');
+                if (card) showMinistryDetail(card.dataset.id);
+            });
+
+            // Form Listeners
+            document.getElementById('connect-form')?.addEventListener('submit', e => handleFormSubmit(e, '/api/connect', 'Message sent!', () => ({})));
             document.getElementById('giving-form')?.addEventListener('submit', handleGivingSubmit);
 
-            // Load Content
+            // Stripe Mount
+            if (cardElement) cardElement.mount('#card-element');
+
+            // Initial Data Load
             loadLocationsWebsite();
             loadEventsWebsite();
-            loadMinistriesWebsite(); 
+            loadMinistriesWebsite();
             loadGalleryWebsite();
-            loadAboutWebsite(); 
+            loadAboutWebsite();
         });
     </script>
 </body>
